@@ -1,6 +1,7 @@
 package dsu_test
 
 import (
+	"math/rand"
 	"testing"
 
 	"alon.kr/x/dsu"
@@ -46,4 +47,46 @@ func TestReverseOrderUnion(t *testing.T) {
 	d.Union(1, 2)
 	d.Union(0, 1)
 	assertAllSame(t, d.Find(0), d.Find(1), d.Find(2))
+}
+
+type unionQuery struct {
+	v1, v2 uint
+}
+
+func createUnionQueries(dsuSize int) []unionQuery {
+	queries := make([]unionQuery, 0)
+	for setSize := 2; setSize < dsuSize; setSize *= 2 {
+		oldSetSize := setSize / 2
+		for i := 0; i+setSize <= dsuSize; i += setSize {
+			a := i + rand.Intn(oldSetSize)
+			b := i + oldSetSize + rand.Intn(oldSetSize)
+			queries = append(queries, unionQuery{uint(a), uint(b)})
+		}
+	}
+
+	rand.Shuffle(len(queries), func(i, j int) {
+		queries[i], queries[j] = queries[j], queries[i]
+	})
+
+	return queries
+}
+
+const dsuSmallestTestSize = 0x10000
+
+func calculateRequiredDsuSize(minimumQueryAmount int) int {
+	dsuSize := dsuSmallestTestSize
+	for dsuSize < minimumQueryAmount {
+		dsuSize *= 2
+	}
+	return dsuSize
+}
+
+func BenchmarkRandomUnions(b *testing.B) {
+	dsuSize := calculateRequiredDsuSize(b.N)
+	dsu := dsu.NewDsu(uint(dsuSize))
+	queries := createUnionQueries(dsuSize)
+	b.ResetTimer()
+	for bi := 0; bi < b.N; bi++ {
+		dsu.Union(queries[bi].v1, queries[bi].v2)
+	}
 }
