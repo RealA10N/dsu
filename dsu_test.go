@@ -1,11 +1,14 @@
 package dsu_test
 
 import (
+	"fmt"
 	"math/rand"
 	"testing"
 
 	"alon.kr/x/dsu"
 )
+
+// MARK: Tests
 
 func assertAllSame(t *testing.T, values ...uint) {
 	for i := 1; i < len(values); i++ {
@@ -49,6 +52,8 @@ func TestReverseOrderUnion(t *testing.T) {
 	assertAllSame(t, d.Find(0), d.Find(1), d.Find(2))
 }
 
+// MARK: Benchmarks
+
 type unionQuery struct {
 	v1, v2 uint
 }
@@ -89,4 +94,28 @@ func BenchmarkRandomUnions(b *testing.B) {
 	for bi := 0; bi < b.N; bi++ {
 		dsu.Union(queries[bi].v1, queries[bi].v2)
 	}
+}
+
+// MARK: Example
+
+func ExampleDsu() {
+	d := dsu.NewDsu(3)
+	d.Union(0, 1)
+
+	if d.Find(0) == d.Find(1) {
+		fmt.Println("0 and 1 are in the same set")
+	}
+
+	if d.Find(1) != d.Find(2) {
+		fmt.Println("1 and 2 are in different sets")
+	}
+
+	if d.Size(0) == 2 {
+		fmt.Println("Set with the element 0 has 2 elements")
+	}
+
+	// Output:
+	// 0 and 1 are in the same set
+	// 1 and 2 are in different sets
+	// Set with the element 0 has 2 elements
 }

@@ -3,8 +3,8 @@ package dsu
 const noParent = ^uint(0)
 
 type Dsu struct {
-	Parent []uint
-	Size   []uint
+	parent []uint
+	size   []uint
 }
 
 // Create a new Disjoint Set Union data structure with n elements.
@@ -14,22 +14,22 @@ type Dsu struct {
 // a correspondence between the element values and their indices.
 func NewDsu(n uint) Dsu {
 	dsu := Dsu{
-		Parent: make([]uint, n),
-		Size:   make([]uint, n),
+		parent: make([]uint, n),
+		size:   make([]uint, n),
 	}
-	for i := range dsu.Parent {
-		dsu.Parent[i] = noParent
-		dsu.Size[i] = 1
+	for i := range dsu.parent {
+		dsu.parent[i] = noParent
+		dsu.size[i] = 1
 	}
 	return dsu
 }
 
 func (d *Dsu) Find(v uint) uint {
-	if d.Parent[v] == noParent {
+	if d.parent[v] == noParent {
 		return v
 	}
-	d.Parent[v] = d.Find(d.Parent[v])
-	return d.Parent[v]
+	d.parent[v] = d.Find(d.parent[v])
+	return d.parent[v]
 }
 
 func (d *Dsu) Union(v1, v2 uint) {
@@ -38,9 +38,13 @@ func (d *Dsu) Union(v1, v2 uint) {
 	if v1 == v2 {
 		return
 	}
-	if d.Size[v1] < d.Size[v2] {
+	if d.size[v1] < d.size[v2] {
 		v1, v2 = v2, v1
 	}
-	d.Parent[v2] = v1
-	d.Size[v1] += d.Size[v2]
+	d.parent[v2] = v1
+	d.size[v1] += d.size[v2]
+}
+
+func (d *Dsu) Size(v uint) uint {
+	return d.size[d.Find(v)]
 }
