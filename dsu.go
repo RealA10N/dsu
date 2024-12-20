@@ -12,8 +12,8 @@ type Dsu struct {
 // The element values are not stored explicitly in the data structure,
 // and the user of the data structure is responsible for maintaining
 // a correspondence between the element values and their indices.
-func NewDsu(n uint) *Dsu {
-	dsu := &Dsu{
+func NewDsu(n uint) Dsu {
+	dsu := Dsu{
 		parent: make([]uint, n),
 		size:   make([]uint, n),
 	}
