@@ -30,6 +30,19 @@ func ExampleDsu() {
 }
 ```
 
+My benchmarks show a <50ns/op performance for random (non-empty) union operations.
+
+```
+$ go test -bench .
+goos: darwin
+goarch: arm64
+pkg: alon.kr/x/dsu
+cpu: Apple M2 Pro
+BenchmarkRandomUnions-10        44521050                48.64 ns/op
+PASS
+ok      alon.kr/x/dsu   6.390s
+```
+
 [ci]: https://github.com/RealA10N/dsu/actions/workflows/ci.yaml/badge.svg
 [codecov]: https://codecov.io/gh/RealA10N/dsu/graph/badge.svg
 [pre-commit.ci status]: https://results.pre-commit.ci/badge/github/RealA10N/dsu/main.svg
